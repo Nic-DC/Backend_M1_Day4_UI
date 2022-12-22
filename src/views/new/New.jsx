@@ -1,7 +1,7 @@
 import { convertToHTML } from "draft-convert";
 import { EditorState } from "draft-js";
 import React, { useEffect, useState } from "react";
-import { Button, Container, Form } from "react-bootstrap";
+import { Button, Container, Form, FormControl } from "react-bootstrap";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./styles.css";
@@ -9,6 +9,7 @@ const NewBlogPost = (props) => {
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
   const [category, setCategory] = useState("");
   const [title, setTitle] = useState("");
+  const [image, setImage] = useState(null);
   const [html, setHTML] = useState(null);
   console.log("title is: ", title);
 
@@ -18,6 +19,13 @@ const NewBlogPost = (props) => {
   const handleCategory = (event) => {
     setCategory(event.target.value);
   };
+
+  const handleImage = (event) => {
+    console.log(event.target.files);
+    setImage(event.target.files[0]);
+  };
+  console.log("The file is: ", image);
+
   useEffect(() => {
     console.log("editorState is: ", editorState);
     let html = convertToHTML(editorState.getCurrentContent());
@@ -25,6 +33,23 @@ const NewBlogPost = (props) => {
     setHTML(html);
   }, [editorState]);
 
+  const handleFileUpload = async (id) => {
+    const formData = new FormData();
+    formData.append("cover", image);
+
+    const endpoint = `http://localhost:3003/files/blogPosts/${id}`;
+
+    const options = {
+      method: "POST",
+      // headers: {
+      //   "Content-Type": "application/json",
+      // },
+      body: formData,
+    };
+
+    const res = await fetch(endpoint, options);
+    const data = await res.json();
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -50,6 +75,7 @@ const NewBlogPost = (props) => {
       //if (res.ok) {
       const postData = await res.json();
       console.log("post data: ", postData);
+      handleFileUpload(postData.id);
 
       // }
     } catch (error) {
@@ -83,6 +109,10 @@ const NewBlogPost = (props) => {
             editorClassName="editorClassName"
             onEditorStateChange={setEditorState}
           />
+        </Form.Group>
+        <Form.Group controlId="image-content" className="mt-3">
+          <Form.Label>Upload Image</Form.Label>
+          <FormControl type="file" onChange={(e) => handleImage(e)}></FormControl>
         </Form.Group>
         <Form.Group className="d-flex mt-3 justify-content-end">
           <Button type="reset" size="lg" variant="outline-dark">
