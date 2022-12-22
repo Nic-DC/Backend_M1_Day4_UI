@@ -6,24 +6,67 @@ import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./styles.css";
 const NewBlogPost = (props) => {
-  const [editorState, setEditorState] = useState(() =>
-    EditorState.createEmpty()
-  );
+  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+  const [category, setCategory] = useState("");
+  const [title, setTitle] = useState("");
   const [html, setHTML] = useState(null);
+  console.log("title is: ", title);
+
+  const handleTitle = (event) => {
+    setTitle(event.target.value);
+  };
+  const handleCategory = (event) => {
+    setCategory(event.target.value);
+  };
   useEffect(() => {
+    console.log("editorState is: ", editorState);
     let html = convertToHTML(editorState.getCurrentContent());
+    console.log("html is", html);
     setHTML(html);
   }, [editorState]);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const endpoint = `http://localhost:3003/blogPosts`;
+
+    try {
+      const post = {
+        category: category,
+        title: title,
+        content: html,
+      };
+      console.log("the post is: ", post);
+
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(post),
+      };
+      const res = await fetch(endpoint, options);
+
+      //if (res.ok) {
+      const postData = await res.json();
+      console.log("post data: ", postData);
+
+      // }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Container className="new-blog-container">
-      <Form className="mt-5">
+      <Form className="mt-5" onSubmit={(e) => handleSubmit(e)}>
         <Form.Group controlId="blog-form" className="mt-3">
           <Form.Label>Title</Form.Label>
-          <Form.Control size="lg" placeholder="Title" />
+          <Form.Control size="lg" placeholder="Title" value={title} onChange={(e) => handleTitle(e)} />
         </Form.Group>
         <Form.Group controlId="blog-category" className="mt-3">
           <Form.Label>Category</Form.Label>
-          <Form.Control size="lg" as="select">
+          <Form.Control size="lg" as="select" value={category} onChange={(e) => handleCategory(e)}>
             <option>Category1</option>
             <option>Category2</option>
             <option>Category3</option>
