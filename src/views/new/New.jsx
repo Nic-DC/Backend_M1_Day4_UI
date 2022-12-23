@@ -60,6 +60,7 @@ const NewBlogPost = (props) => {
         category: category,
         title: title,
         content: html,
+        cover: image,
       };
       console.log("the post is: ", post);
 
@@ -75,14 +76,14 @@ const NewBlogPost = (props) => {
       //if (res.ok) {
       const postData = await res.json();
       console.log("post data: ", postData);
-      handleFileUpload(postData.id);
+      handleFileUpload(postData._id);
 
       // }
     } catch (error) {
       console.log(error);
     }
   };
-
+  console.log("the image is:", image);
   return (
     <Container className="new-blog-container">
       <Form className="mt-5" onSubmit={(e) => handleSubmit(e)}>
