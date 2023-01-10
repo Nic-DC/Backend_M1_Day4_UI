@@ -81,7 +81,7 @@ const NewBlogPost = (props) => {
       //if (res.ok) {
       const postData = await res.json();
       console.log("post data: ", postData);
-      handleFileUpload(postData._id);
+      handleFileUpload(postData.id);
 
       // }
     } catch (error) {
