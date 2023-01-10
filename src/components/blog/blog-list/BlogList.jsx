@@ -11,7 +11,9 @@ const BlogList = (props) => {
   }, []);
 
   const fetchPosts = async () => {
-    const endpoint = `http://localhost:3003/blogPosts`;
+    const apiUrl = process.env.REACT_APP_BE_URL;
+    // const endpoint = `http://localhost:3003/blogPosts`;
+    const endpoint = `${apiUrl}/blogPosts`;
 
     try {
       const options = {

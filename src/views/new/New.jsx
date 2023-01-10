@@ -37,7 +37,10 @@ const NewBlogPost = (props) => {
     const formData = new FormData();
     formData.append("cover", image);
 
-    const endpoint = `http://localhost:3003/files/blogPosts/${id}`;
+    const apiUrl = process.env.REACT_APP_BE_URL;
+
+    // const endpoint = `http://localhost:3003/files/blogPosts/${id}`;
+    const endpoint = `${apiUrl}/files/blogPosts/${id}`;
 
     const options = {
       method: "POST",
@@ -53,7 +56,9 @@ const NewBlogPost = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const endpoint = `http://localhost:3003/blogPosts`;
+    const apiUrl = process.env.REACT_APP_BE_URL;
+    // const endpoint = `http://localhost:3003/blogPosts`;
+    const endpoint = `${apiUrl}/blogPosts`;
 
     try {
       const post = {
