@@ -9,7 +9,7 @@ const BlogItem = (props) => {
 
   const downloadPDF = async () => {
     const url = process.env.REACT_APP_BE_URL;
-    const endpoint = `${url}/files/${id}/pdf`;
+    const endpoint = `${url}/files/${_id}/pdf`;
 
     const res = await fetch(endpoint);
     if (res.ok) {
